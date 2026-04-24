@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: connector-config
+  namespace: appns
+data:
+  DB_HOST: "postgres-svc"
+  DB_PORT: "5432"
+  SERVER_PORT: "8080"
+  # Get a free key at https://www.omdbapi.com/apikey.aspx

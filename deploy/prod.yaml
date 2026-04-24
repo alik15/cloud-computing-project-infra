@@ -1,0 +1,8 @@
+apiVersion: deploy.cloud.google.com/v1
+kind: Target
+metadata:
+  name: prod
+description: Production environment
+requireApproval: true  
+gke:
+  cluster: projects/cloud-computing-project-ali/locations/us-central1-a/clusters/prod-cluster

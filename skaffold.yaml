@@ -1,0 +1,12 @@
+apiVersion: skaffold/v4beta7
+kind: Config
+metadata:
+  name: cloud-computing-project
+manifests:
+  rawYaml:
+    - k8s/namespace.yaml
+    - k8s/postgres/*.yaml
+    - k8s/connector/*.yaml
+    - k8s/frontend/*.yaml
+deploy:
+  kubectl: {}
