@@ -9,7 +9,7 @@ spec:
     kind: Deployment
     name: connector
   minReplicas: 1
-  maxReplicas: 5
+  maxReplicas: 1
   metrics:
     - type: Resource
       resource:
