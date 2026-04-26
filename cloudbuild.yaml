@@ -7,26 +7,5 @@ steps:
     - 'CLOUDSDK_CONTAINER_CLUSTER=dev-cluster'
     - 'CLOUDSDK_CORE_PROJECT=$PROJECT_ID'
 
-- name: 'google/cloud-sdk:latest'
-  entrypoint: 'sh'
-  args:
-  - -xe
-  - -c
-  - |
-    gcloud deploy apply --file deploy/pipeline.yaml --region=us-central1
-    gcloud deploy apply --file deploy/dev.yaml --region=us-central1
-    gcloud deploy apply --file deploy/prod.yaml --region=us-central1
-
-    LATEST=$(gcloud artifacts docker images list \
-      us-central1-docker.pkg.dev/$PROJECT_ID/gke-repo/connector \
-      --sort-by=~UPDATE_TIME --limit=1 --format='value(version)')
-
-    gcloud deploy releases create rel-$SHORT_SHA \
-      --delivery-pipeline=gke-cicd-pipeline \
-      --region=us-central1 \
-      --skaffold-file=skaffold.yaml \
-      --images=connector=us-central1-docker.pkg.dev/$PROJECT_ID/gke-repo/connector:$LATEST,frontend=us-central1-docker.pkg.dev/$PROJECT_ID/gke-repo/frontend:$LATEST
-  waitFor: ['Apply Manifests']
-
 options:
   logging: CLOUD_LOGGING_ONLY
