@@ -1,4 +1,17 @@
 steps:
+# 1. Create Cloud Deploy pipeline and targets
+- name: 'google/cloud-sdk:latest'
+  id: 'Create Pipeline'
+  entrypoint: 'sh'
+  args:
+  - -xe
+  - -c
+  - |
+    gcloud deploy apply --file deploy/pipeline.yaml --region=us-central1
+    gcloud deploy apply --file deploy/dev.yaml --region=us-central1
+    gcloud deploy apply --file deploy/prod.yaml --region=us-central1
+
+# 2. Apply k8s manifests
 - name: 'gcr.io/cloud-builders/kubectl'
   id: 'Apply Manifests'
   args: ['apply', '-f', 'k8s/']
@@ -6,6 +19,7 @@ steps:
     - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
     - 'CLOUDSDK_CONTAINER_CLUSTER=dev-cluster'
     - 'CLOUDSDK_CORE_PROJECT=$PROJECT_ID'
+  waitFor: ['Create Pipeline']
 
 options:
   logging: CLOUD_LOGGING_ONLY
