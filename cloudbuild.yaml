@@ -11,15 +11,25 @@ steps:
     gcloud deploy apply --file deploy/dev.yaml --region=us-central1
     gcloud deploy apply --file deploy/prod.yaml --region=us-central1
 
-# 2. Apply k8s manifests
+# 2. Apply namespace first
 - name: 'gcr.io/cloud-builders/kubectl'
-  id: 'Apply Manifests'
-  args: ['apply', '-R',  '-f', 'k8s/']
+  id: 'Apply Namespace'
+  args: ['apply', '-f', 'k8s/namespace.yaml']
   env:
     - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
     - 'CLOUDSDK_CONTAINER_CLUSTER=dev-cluster'
     - 'CLOUDSDK_CORE_PROJECT=$PROJECT_ID'
   waitFor: ['Create Pipeline']
+
+# 3. Apply everything else recursively
+- name: 'gcr.io/cloud-builders/kubectl'
+  id: 'Apply Manifests'
+  args: ['apply', '-R', '-f', 'k8s/']
+  env:
+    - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=dev-cluster'
+    - 'CLOUDSDK_CORE_PROJECT=$PROJECT_ID'
+  waitFor: ['Apply Namespace']
 
 options:
   logging: CLOUD_LOGGING_ONLY
