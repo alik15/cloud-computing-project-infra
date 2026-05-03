@@ -14,7 +14,7 @@ steps:
 # 2. Apply k8s manifests
 - name: 'gcr.io/cloud-builders/kubectl'
   id: 'Apply Manifests'
-  args: ['apply', '-f', 'k8s/']
+  args: ['apply', '-R',  '-f', 'k8s/']
   env:
     - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
     - 'CLOUDSDK_CONTAINER_CLUSTER=dev-cluster'
